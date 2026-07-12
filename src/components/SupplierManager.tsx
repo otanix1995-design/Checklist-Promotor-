@@ -20,6 +20,7 @@ export default function SupplierManager({ fornecedores, setores, onSave, onBack 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editSectorId, setEditSectorId] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const [selectedDays, setSelectedDays] = useState<string[]>(['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado']);
@@ -139,10 +140,9 @@ export default function SupplierManager({ fornecedores, setores, onSave, onBack 
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Tem certeza de que deseja remover esta agência? Ela deixará de aparecer em novos checklists, mas os registros antigos de presença serão preservados.')) {
-      const updated = fornecedores.filter(f => f.id !== id);
-      onSave(updated);
-    }
+    const updated = fornecedores.filter(f => f.id !== id);
+    onSave(updated);
+    setDeletingId(null);
   };
 
   // Grouped or filtered suppliers
@@ -374,7 +374,27 @@ export default function SupplierManager({ fornecedores, setores, onSave, onBack 
                         )}
 
                         <div className="flex items-center gap-1">
-                          {editingId === forn.id ? (
+                          {deletingId === forn.id ? (
+                            <div className="flex items-center gap-1.5 animate-fade bg-red-50 p-1 px-2 rounded-lg border border-red-200" id={`supplier-delete-confirm-${forn.id}`}>
+                              <span className="text-[10px] text-red-600 font-bold uppercase tracking-wider">Excluir?</span>
+                              <button
+                                onClick={() => handleDelete(forn.id)}
+                                className="p-1 px-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all cursor-pointer shadow-xs"
+                                title="Confirmar exclusão"
+                                id={`supplier-btn-confirm-del-${forn.id}`}
+                              >
+                                Sim
+                              </button>
+                              <button
+                                onClick={() => setDeletingId(null)}
+                                className="p-1 px-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-xs font-semibold transition-all cursor-pointer"
+                                title="Cancelar"
+                                id={`supplier-btn-cancel-del-${forn.id}`}
+                              >
+                                Não
+                              </button>
+                            </div>
+                          ) : editingId === forn.id ? (
                             <>
                               <button
                                 onClick={() => handleUpdate(forn.id)}
@@ -396,7 +416,10 @@ export default function SupplierManager({ fornecedores, setores, onSave, onBack 
                           ) : (
                             <>
                               <button
-                                onClick={() => handleStartEdit(forn)}
+                                onClick={() => {
+                                  setDeletingId(null);
+                                  handleStartEdit(forn);
+                                }}
                                 className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
                                 title="Editar agência"
                                 id={`btn-edit-supplier-${forn.id}`}
@@ -404,7 +427,10 @@ export default function SupplierManager({ fornecedores, setores, onSave, onBack 
                                 <Edit2 className="w-4 h-4" />
                               </button>
                               <button
-                                onClick={() => handleDelete(forn.id)}
+                                onClick={() => {
+                                  setEditingId(null);
+                                  setDeletingId(forn.id);
+                                }}
                                 className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
                                 title="Remover agência"
                                 id={`btn-delete-supplier-${forn.id}`}

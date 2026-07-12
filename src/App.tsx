@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Filial, Setor, Fornecedor, ChecklistRecord } from './types';
 import { OfflineDB } from './db';
+import logoImage from './assets/images/app_logo_1783879634849.jpg';
 import BranchManager from './components/BranchManager';
 import SectorManager from './components/SectorManager';
 import SupplierManager from './components/SupplierManager';
@@ -158,13 +159,13 @@ export default function App() {
       
       {/* 1. SIDEBAR FOR DESKTOP (Professional Polish theme) */}
       <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col h-screen shrink-0 sticky top-0 shadow-lg z-40 transition-all font-sans" id="desktop-sidebar">
-        <div className="p-6 flex flex-col items-center border-b border-slate-100">
-          <div className="text-2xl font-black tracking-tighter text-[#005AA9] mb-1 uppercase select-none">
-            PROMOTOR<span className="text-[#F58220]">CHECK</span>
-          </div>
-          <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
-            Store Management Tool
-          </div>
+        <div className="p-4 flex flex-col items-center border-b border-slate-100 bg-white">
+          <img 
+            src={logoImage} 
+            alt="Checklist Promotor Logo" 
+            className="w-44 h-auto rounded-xl object-contain hover:scale-105 transition-transform duration-300"
+            referrerPolicy="no-referrer"
+          />
         </div>
 
         {/* Sidebar Navigation */}
@@ -230,12 +231,17 @@ export default function App() {
         {/* MOBILE ONLY TOP HEADER */}
         <header className="md:hidden bg-[#005AA9] text-white shadow-md sticky top-0 z-50 px-4 py-3" id="main-header">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="bg-[#F58220] text-white rounded-lg px-2.5 py-1 font-black text-xs tracking-wide shadow-sm select-none">
-                PC
+            <div className="flex items-center gap-3">
+              <div className="bg-white rounded-lg p-0.5 flex items-center justify-center shadow-xs">
+                <img 
+                  src={logoImage} 
+                  alt="Logo" 
+                  className="w-9 h-9 object-contain rounded-md"
+                  referrerPolicy="no-referrer"
+                />
               </div>
               <div>
-                <h1 className="text-sm font-extrabold uppercase tracking-tight">PromotorCheck</h1>
+                <h1 className="text-sm font-extrabold uppercase tracking-tight">Checklist Promotor</h1>
                 <p className="text-[8px] text-blue-100 uppercase tracking-widest font-semibold">Atacadão Líder</p>
               </div>
             </div>

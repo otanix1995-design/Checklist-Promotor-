@@ -17,6 +17,7 @@ export default function SectorManager({ setores, onSave, onBack }: SectorManager
   const [newName, setNewName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const handleAdd = (e: React.FormEvent) => {
@@ -81,10 +82,9 @@ export default function SectorManager({ setores, onSave, onBack }: SectorManager
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Atenção: Excluir este setor fará com que fornecedores vinculados a ele fiquem sem setor configurado. Deseja prosseguir com a exclusão?')) {
-      const updated = setores.filter(s => s.id !== id);
-      onSave(updated);
-    }
+    const updated = setores.filter(s => s.id !== id);
+    onSave(updated);
+    setDeletingId(null);
   };
 
   return (
@@ -168,7 +168,27 @@ export default function SectorManager({ setores, onSave, onBack }: SectorManager
                   )}
 
                   <div className="flex items-center gap-1">
-                    {editingId === sector.id ? (
+                    {deletingId === sector.id ? (
+                      <div className="flex items-center gap-1.5 animate-fade bg-red-50 p-1 px-2 rounded-lg border border-red-200" id={`sector-delete-confirm-${sector.id}`}>
+                        <span className="text-[10px] text-red-600 font-bold uppercase tracking-wider">Excluir?</span>
+                        <button
+                          onClick={() => handleDelete(sector.id)}
+                          className="p-1 px-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all cursor-pointer shadow-xs"
+                          title="Confirmar exclusão"
+                          id={`sector-btn-confirm-del-${sector.id}`}
+                        >
+                          Sim
+                        </button>
+                        <button
+                          onClick={() => setDeletingId(null)}
+                          className="p-1 px-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-xs font-semibold transition-all cursor-pointer"
+                          title="Cancelar"
+                          id={`sector-btn-cancel-del-${sector.id}`}
+                        >
+                          Não
+                        </button>
+                      </div>
+                    ) : editingId === sector.id ? (
                       <>
                         <button
                           onClick={() => handleUpdate(sector.id)}
@@ -190,7 +210,10 @@ export default function SectorManager({ setores, onSave, onBack }: SectorManager
                     ) : (
                       <>
                         <button
-                          onClick={() => handleStartEdit(sector)}
+                          onClick={() => {
+                            setDeletingId(null);
+                            handleStartEdit(sector);
+                          }}
                           className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
                           title="Editar setor"
                           id={`btn-edit-sector-${sector.id}`}
@@ -198,7 +221,10 @@ export default function SectorManager({ setores, onSave, onBack }: SectorManager
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(sector.id)}
+                          onClick={() => {
+                            setEditingId(null);
+                            setDeletingId(sector.id);
+                          }}
                           className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
                           title="Excluir setor"
                           id={`btn-delete-sector-${sector.id}`}

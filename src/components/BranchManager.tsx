@@ -19,6 +19,7 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editCode, setEditCode] = useState('');
   const [editName, setEditName] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const handleAdd = (e: React.FormEvent) => {
@@ -87,10 +88,9 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Tem certeza que deseja excluir esta filial? Os checklists vinculados a ela não serão alterados, mas ela deixará de aparecer em novas seleções.')) {
-      const updated = filiais.filter(f => f.id !== id);
-      onSave(updated);
-    }
+    const updated = filiais.filter(f => f.id !== id);
+    onSave(updated);
+    setDeletingId(null);
   };
 
   return (
@@ -195,7 +195,27 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
                   )}
 
                   <div className="flex items-center gap-1">
-                    {editingId === branch.id ? (
+                    {deletingId === branch.id ? (
+                      <div className="flex items-center gap-1.5 animate-fade bg-red-50 p-1 px-2 rounded-lg border border-red-200" id={`delete-confirm-${branch.id}`}>
+                        <span className="text-[10px] text-red-600 font-bold uppercase tracking-wider">Excluir?</span>
+                        <button
+                          onClick={() => handleDelete(branch.id)}
+                          className="p-1 px-2 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all cursor-pointer shadow-xs"
+                          title="Confirmar exclusão"
+                          id={`btn-confirm-del-${branch.id}`}
+                        >
+                          Sim
+                        </button>
+                        <button
+                          onClick={() => setDeletingId(null)}
+                          className="p-1 px-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-xs font-semibold transition-all cursor-pointer"
+                          title="Cancelar"
+                          id={`btn-cancel-del-${branch.id}`}
+                        >
+                          Não
+                        </button>
+                      </div>
+                    ) : editingId === branch.id ? (
                       <>
                         <button
                           onClick={() => handleUpdate(branch.id)}
@@ -217,7 +237,10 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
                     ) : (
                       <>
                         <button
-                          onClick={() => handleStartEdit(branch)}
+                          onClick={() => {
+                            setDeletingId(null);
+                            handleStartEdit(branch);
+                          }}
                           className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
                           title="Editar filial"
                           id={`btn-edit-${branch.id}`}
@@ -225,7 +248,10 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(branch.id)}
+                          onClick={() => {
+                            setEditingId(null);
+                            setDeletingId(branch.id);
+                          }}
                           className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
                           title="Excluir filial"
                           id={`btn-delete-${branch.id}`}
