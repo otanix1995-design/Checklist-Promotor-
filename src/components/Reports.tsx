@@ -97,7 +97,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     return p ? p.nome : 'Agência Excluída';
   };
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
     if (matchingRecords.length === 0) {
       alert('Não existem registros para exportar PDF.');
       return;
@@ -300,7 +300,31 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     doc.text('GERADO AUTOMATICAMENTE POR PROMOTORCHECK • ATACADÃO S.A.', docWidth / 2, docHeight - 6, { align: 'center' });
 
     const formattedFileName = `PromotorCheck_UltimoRelatorio_${latest.data.replace(/-/g, '')}.pdf`;
-    doc.save(formattedFileName);
+    
+    if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
+      try {
+        const handle = await (window as any).showSaveFilePicker({
+          suggestedName: formattedFileName,
+          types: [{
+            description: 'Documento PDF (*.pdf)',
+            accept: {
+              'application/pdf': ['.pdf']
+            }
+          }]
+        });
+        const writable = await handle.createWritable();
+        const pdfOutput = doc.output('arraybuffer');
+        await writable.write(pdfOutput);
+        await writable.close();
+      } catch (err: any) {
+        if (err && err.name !== 'AbortError') {
+          console.error('Erro ao salvar PDF via showSaveFilePicker, usando fallback:', err);
+          doc.save(formattedFileName);
+        }
+      }
+    } else {
+      doc.save(formattedFileName);
+    }
   };
 
   // Excel Export Flow
