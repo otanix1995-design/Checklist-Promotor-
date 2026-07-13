@@ -301,6 +301,27 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
 
     const formattedFileName = `PromotorCheck_UltimoRelatorio_${latest.data.replace(/-/g, '')}.pdf`;
     
+    // 1. Try native mobile sharing (best for Android WebView / APK Wrappers)
+    const pdfBlob = doc.output('blob');
+    const pdfFile = new File([pdfBlob], formattedFileName, { type: 'application/pdf' });
+    
+    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      try {
+        await navigator.share({
+          files: [pdfFile],
+          title: 'Relatório PDF',
+          text: 'Relatório do Checklist de Promotores Atacadão'
+        });
+        return; // Success! Sharing/Saving handled by native sheet
+      } catch (err: any) {
+        if (err && err.name === 'AbortError') {
+          return; // User cancelled, do nothing
+        }
+        console.error('Erro ao compartilhar PDF, usando fallback:', err);
+      }
+    }
+
+    // 2. Try showSaveFilePicker if supported (mostly desktop Chrome)
     if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
       try {
         const handle = await (window as any).showSaveFilePicker({
@@ -328,7 +349,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
   };
 
   // Excel Export Flow
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     if (matchingRecords.length === 0) {
       alert('Não existem registros para exportar Excel.');
       return;
@@ -353,6 +374,33 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Checklist Registros');
     
     const formattedFileName = `PromotorCheck_Relatorio_${startDate.replace(/-/g, '')}_${endDate.replace(/-/g, '')}.xlsx`;
+    
+    // Check if we can share the Excel file (best for APK / WebView)
+    try {
+      const excelOutput = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const excelBlob = new Blob([excelOutput], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const excelFile = new File([excelBlob], formattedFileName, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      if (navigator.canShare && navigator.canShare({ files: [excelFile] })) {
+        try {
+          await navigator.share({
+            files: [excelFile],
+            title: 'Relatório Excel',
+            text: 'Relatório do Checklist de Promotores Atacadão (Excel)'
+          });
+          return; // Success! Native sharing sheet handled it
+        } catch (shareErr: any) {
+          if (shareErr && shareErr.name === 'AbortError') {
+            return; // User cancelled, do nothing
+          }
+          console.error('Erro ao compartilhar Excel:', shareErr);
+        }
+      }
+    } catch (e) {
+      console.error('Falha ao preparar arquivo Excel para compartilhamento:', e);
+    }
+
+    // Standard download fallback
     XLSX.writeFile(workbook, formattedFileName);
   };
 
