@@ -1,0 +1,32 @@
+{
+  "name": "Checklist Promotor - Atacadão",
+  "short_name": "Checklist Promotor",
+  "description": "Controle diário de presença de promotores nas filiais do Atacadão, otimizado para celular e com funcionamento offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#005AA9",
+  "orientation": "portrait",
+  "id": "/",
+  "categories": ["business", "utilities"],
+  "icons": [
+    {
+      "src": "/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}

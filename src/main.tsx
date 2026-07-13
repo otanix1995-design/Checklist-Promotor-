@@ -8,3 +8,16 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 );
+
+// Registrar o Service Worker para funcionamento offline e suporte a PWA/APK
+if ('serviceWorker' in navigator && typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => {
+        console.log('Service Worker registrado com sucesso:', reg.scope);
+      })
+      .catch((err) => {
+        console.error('Falha ao registrar Service Worker:', err);
+      });
+  });
+}
