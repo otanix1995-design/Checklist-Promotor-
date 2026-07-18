@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { ChecklistRecord, Filial, Setor, Fornecedor } from '../types';
-import { Calendar, FileDown, Eye, RefreshCw, Send, Search, CheckCircle, HelpCircle, AlertCircle, RefreshCcw } from 'lucide-react';
+import { Calendar, FileDown, Eye, RefreshCw, Send, Search, CheckCircle, HelpCircle, AlertCircle, RefreshCcw, Trash2, AlertTriangle } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -15,9 +15,13 @@ interface ReportsProps {
   filiais: Filial[];
   setores: Setor[];
   fornecedores: Fornecedor[];
+  onClearHistory: () => void;
 }
 
-export default function Reports({ checklists, filiais, setores, fornecedores }: ReportsProps) {
+export default function Reports({ checklists, filiais, setores, fornecedores, onClearHistory }: ReportsProps) {
+  // Clear Confirmation Modal state
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
   // Query Filters state
   const [startDate, setStartDate] = useState(() => {
     // Current date - 7 days for a rolling view
@@ -597,8 +601,18 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
 
         <div className="flex md:justify-end gap-2 mt-4 pt-4 border-t border-gray-50 flex-col sm:flex-row" id="filters-actions-box">
           <button
+            onClick={() => setShowClearConfirm(true)}
+            disabled={checklists.length === 0}
+            className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+            id="btn-clear-history-database"
+            title="Excluir de forma definitiva todo o histórico de lançamentos"
+          >
+            <Trash2 className="w-3.5 h-3.5" /> Limpar Histórico
+          </button>
+
+          <button
             onClick={handleResetFilters}
-            className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 rounded-lg font-bold text-xs flex items-center justify-center gap-1 cursor-pointer transition-all shrink-0"
+            className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all shrink-0"
             id="btn-clear-report-filters"
           >
             <RefreshCcw className="w-3.5 h-3.5" /> Limpar Filtros
@@ -723,6 +737,49 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
             );
           })()}
         </>
+      )}
+
+      {/* Confirmation Modal overlay */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" id="clear-confirm-modal-overlay">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-100 overflow-hidden transform transition-all animate-fade animate-duration-200" id="clear-confirm-modal-box">
+            <div className="h-1.5 bg-rose-500"></div>
+            <div className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-rose-50 text-rose-600 rounded-full shrink-0">
+                  <AlertTriangle className="w-6 h-6" />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-base font-bold text-gray-900">Limpar todo o Histórico?</h3>
+                  <p className="text-gray-500 text-xs leading-relaxed">
+                    Esta ação é definitiva e apagará todos os <strong>{checklists.length} lançamentos</strong> salvos neste dispositivo. 
+                    Se houver pendências de sincronização offline, elas também serão perdidas de forma permanente.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-100">
+                <button
+                  onClick={() => setShowClearConfirm(false)}
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 rounded-lg font-bold text-xs cursor-pointer transition-all"
+                  id="btn-cancel-clear-history"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    onClearHistory();
+                    setShowClearConfirm(false);
+                  }}
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-sm"
+                  id="btn-confirm-clear-history"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Confirmar e Excluir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

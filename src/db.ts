@@ -220,4 +220,10 @@ export class OfflineDB {
     localStorage.removeItem(KEYS.PENDING_SYNC);
     localStorage.removeItem(KEYS.LAST_SYNC);
   }
+
+  // Clears checklist history only
+  static clearChecklistHistory(): void {
+    localStorage.removeItem(KEYS.CHECKLISTS);
+    localStorage.removeItem(KEYS.PENDING_SYNC);
+  }
 }

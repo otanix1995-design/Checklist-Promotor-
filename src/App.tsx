@@ -146,6 +146,12 @@ export default function App() {
     }
   };
 
+  const handleClearChecklistHistory = () => {
+    OfflineDB.clearChecklistHistory();
+    setChecklists([]);
+    setPendingSyncCount(0);
+  };
+
   const formattedDateString = () => {
     const today = new Date();
     const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -524,6 +530,7 @@ export default function App() {
               filiais={filiais}
               setores={setores}
               fornecedores={fornecedores}
+              onClearHistory={handleClearChecklistHistory}
             />
           )}
 
