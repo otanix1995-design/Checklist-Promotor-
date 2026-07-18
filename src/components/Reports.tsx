@@ -196,7 +196,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     let colWidth = 86;
     let gapX = 8;
     let startX = 14;
-    let startY = 54;
+    let startY = 58;
     let rowHeight = 9.5;
     let fontSize = 9.5;
     let obsFontSize = 7.5;
@@ -208,6 +208,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       colWidth = 86;
       gapX = 8;
       startX = 14;
+      startY = 60;
       rowHeight = 10.5;
       fontSize = 9.5;
       obsFontSize = 7.5;
@@ -218,6 +219,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       colWidth = 86;
       gapX = 8;
       startX = 14;
+      startY = 59;
       rowHeight = 8.5;
       fontSize = 9.0;
       obsFontSize = 7.0;
@@ -228,6 +230,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       colWidth = 63;
       gapX = 6;
       startX = 12;
+      startY = 58;
       rowHeight = 8.0;
       fontSize = 8.0;
       obsFontSize = 6.5;
@@ -238,6 +241,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       colWidth = 51;
       gapX = 5;
       startX = 10;
+      startY = 58;
       rowHeight = 7.5;
       fontSize = 7.5;
       obsFontSize = 6.0;
@@ -248,6 +252,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       colWidth = 51;
       gapX = 5;
       startX = 10;
+      startY = 58;
       rowHeight = 6.2;
       fontSize = 7.0;
       obsFontSize = 5.5;
@@ -258,6 +263,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       colWidth = 43;
       gapX = 4;
       startX = 8;
+      startY = 58;
       rowHeight = 5.2;
       fontSize = 6.5;
       obsFontSize = 5.0;
