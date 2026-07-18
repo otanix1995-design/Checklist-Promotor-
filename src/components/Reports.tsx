@@ -189,13 +189,80 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     const sectorLabel = getSetorLabel(latest.setor_id).toUpperCase();
     doc.text(sectorLabel, 14, 47.5);
 
-    // Display checklist records in exactly 3 columns horizontally to guarantee single-page fit.
-    const startX = 14;
-    const startY = 60;
-    const colWidth = 86;
-    const gapX = 8;
-    const rowHeight = 11;
-    const numCols = 3;
+    const totalItems = latestSessionRecords.length;
+
+    // Define compact properties dynamically based on the total items to guarantee a perfect 1-page fit:
+    let numCols = 3;
+    let colWidth = 86;
+    let gapX = 8;
+    let startX = 14;
+    let startY = 54;
+    let rowHeight = 9.5;
+    let fontSize = 9.5;
+    let obsFontSize = 7.5;
+    let checkboxSize = 5.0;
+
+    if (totalItems <= 27) {
+      // 3 columns, very spacious
+      numCols = 3;
+      colWidth = 86;
+      gapX = 8;
+      startX = 14;
+      rowHeight = 10.5;
+      fontSize = 9.5;
+      obsFontSize = 7.5;
+      checkboxSize = 5.0;
+    } else if (totalItems <= 36) {
+      // 3 columns, normal
+      numCols = 3;
+      colWidth = 86;
+      gapX = 8;
+      startX = 14;
+      rowHeight = 8.5;
+      fontSize = 9.0;
+      obsFontSize = 7.0;
+      checkboxSize = 4.5;
+    } else if (totalItems <= 48) {
+      // 4 columns, compact
+      numCols = 4;
+      colWidth = 63;
+      gapX = 6;
+      startX = 12;
+      rowHeight = 8.0;
+      fontSize = 8.0;
+      obsFontSize = 6.5;
+      checkboxSize = 4.0;
+    } else if (totalItems <= 65) {
+      // 5 columns, compact
+      numCols = 5;
+      colWidth = 51;
+      gapX = 5;
+      startX = 10;
+      rowHeight = 7.5;
+      fontSize = 7.5;
+      obsFontSize = 6.0;
+      checkboxSize = 3.6;
+    } else if (totalItems <= 90) {
+      // 5 columns, extra compact
+      numCols = 5;
+      colWidth = 51;
+      gapX = 5;
+      startX = 10;
+      rowHeight = 6.2;
+      fontSize = 7.0;
+      obsFontSize = 5.5;
+      checkboxSize = 3.2;
+    } else {
+      // 6 columns, super compact for extreme cases (90+ up to 120 or more)
+      numCols = 6;
+      colWidth = 43;
+      gapX = 4;
+      startX = 8;
+      rowHeight = 5.2;
+      fontSize = 6.5;
+      obsFontSize = 5.0;
+      checkboxSize = 2.8;
+    }
 
     latestSessionRecords.forEach((rec, idx) => {
       const colIndex = idx % numCols;
@@ -210,36 +277,40 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
       if (rec.status === 'presente') {
         // Checked state: Fill with green and draw checkmark
         doc.setFillColor(16, 185, 129); // Emerald Green
-        doc.rect(colX, rowY - 4.5, 5, 5, 'F');
+        doc.rect(colX, rowY - checkboxSize + 0.5, checkboxSize, checkboxSize, 'F');
         
         doc.setDrawColor(255, 255, 255);
         doc.setLineWidth(0.6);
-        doc.line(colX + 1.2, rowY - 2.2, colX + 2.2, rowY - 1.2);
-        doc.line(colX + 2.2, rowY - 1.2, colX + 4.0, rowY - 3.5);
+        doc.line(colX + checkboxSize * 0.24, rowY - checkboxSize * 0.44, colX + checkboxSize * 0.44, rowY - checkboxSize * 0.24);
+        doc.line(colX + checkboxSize * 0.44, rowY - checkboxSize * 0.24, colX + checkboxSize * 0.8, rowY - checkboxSize * 0.7);
       } else {
         // Unchecked (Ausente) state: Empty square checkbox with red border and custom soft red X inside
         doc.setDrawColor(239, 68, 68); // Soft Red for Ausente
         doc.setFillColor(254, 242, 242); // very light red background
-        doc.rect(colX, rowY - 4.5, 5, 5, 'FD');
+        doc.rect(colX, rowY - checkboxSize + 0.5, checkboxSize, checkboxSize, 'FD');
 
         doc.setDrawColor(239, 68, 68);
         doc.setLineWidth(0.4);
-        doc.line(colX + 1.4, rowY - 3.1, colX + 3.6, rowY - 0.9);
-        doc.line(colX + 3.6, rowY - 3.1, colX + 1.4, rowY - 0.9);
+        doc.line(colX + checkboxSize * 0.28, rowY - checkboxSize * 0.62, colX + checkboxSize * 0.72, rowY - checkboxSize * 0.18);
+        doc.line(colX + checkboxSize * 0.72, rowY - checkboxSize * 0.62, colX + checkboxSize * 0.28, rowY - checkboxSize * 0.18);
       }
 
       // Supplier text label - slightly lifted to fit observation line
       doc.setTextColor(30, 41, 59); // Slate-800
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
-      doc.text(supplierName, colX + 8, rowY - 1.5);
+      doc.setFontSize(fontSize);
+      
+      // Truncate name safely so it never overlaps or wraps awkwardly
+      const truncatedName = doc.splitTextToSize(supplierName, colWidth - (checkboxSize + 5))[0];
+      doc.text(truncatedName, colX + checkboxSize + 3, rowY - 1.5);
 
       // Render optional observation text (e.g. "Hoje não é dia de Atendimento")
       if (rec.observacao) {
         doc.setFont('helvetica', 'italic');
-        doc.setFontSize(7.5);
+        doc.setFontSize(obsFontSize);
         doc.setTextColor(100, 116, 139); // Slate-500
-        doc.text(rec.observacao, colX + 8, rowY + 1.2);
+        const truncatedObs = doc.splitTextToSize(rec.observacao, colWidth - (checkboxSize + 5))[0];
+        doc.text(truncatedObs, colX + checkboxSize + 3, rowY + 1.2);
       }
 
       // Light underline separator under this supplier element
@@ -258,7 +329,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     doc.setLineWidth(0.4);
     doc.rect(10, statsY, docWidth - 20, 20, 'S');
 
-    // Stats values
+    // Stats values matching all session records
     const total = latestSessionRecords.length;
     const presentes = latestSessionRecords.filter(r => r.status === 'presente').length;
     const ausentes = latestSessionRecords.filter(r => r.status === 'ausente').length;
@@ -298,6 +369,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores }: 
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184); // Slate-400
     doc.text('GERADO AUTOMATICAMENTE POR PROMOTORCHECK • ATACADÃO S.A.', docWidth / 2, docHeight - 6, { align: 'center' });
+    doc.text('PÁGINA 1 DE 1', docWidth - 15, docHeight - 6, { align: 'right' });
 
     const formattedFileName = `PromotorCheck_UltimoRelatorio_${latest.data.replace(/-/g, '')}.pdf`;
     
@@ -587,55 +659,63 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
           </div>
 
           {/* Detailed Data Table */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden" id="reports-table-card">
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-gray-700">Lançamentos Detalhados</h3>
-              <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded">
-                Filtrados: {totalPrevistos}
-              </span>
-            </div>
+          {(() => {
+            const isCompactTable = totalPrevistos > 20;
+            const tableCellPadding = isCompactTable ? (totalPrevistos > 50 ? "p-1.5" : "p-2.5") : "p-3.5";
+            const tableFontSize = isCompactTable ? (totalPrevistos > 50 ? "text-[10.5px]" : "text-[11.5px]") : "text-xs";
 
-            <div className="overflow-x-auto" id="table-scroll">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-slate-500 font-bold border-b border-gray-100">
-                    <th className="p-3.5">Data/Hora</th>
-                    <th className="p-3.5">Filial</th>
-                    <th className="p-3.5">Setor</th>
-                    <th className="p-3.5">Líder</th>
-                    <th className="p-3.5">Agência</th>
-                    <th className="p-3.5">Status</th>
-                    <th className="p-3.5">Observação</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 text-gray-700 font-medium">
-                  {matchingRecords.map((item) => {
-                    const leg = STATUS_LEGENDS[item.status] || { label: item.status, icon: '', color: 'bg-gray-100 text-gray-600' };
-                    return (
-                      <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="p-3.5 whitespace-nowrap">
-                          <span className="font-bold text-gray-900 block">{item.data.split('-').reverse().join('/')}</span>
-                          <span className="font-mono text-[9px] text-gray-400 block mt-0.5">{item.hora}</span>
-                        </td>
-                        <td className="p-3.5 font-bold text-indigo-950 whitespace-nowrap">{getFilialLabel(item.filial_id)}</td>
-                        <td className="p-3.5 text-gray-800 whitespace-nowrap">{getSetorLabel(item.setor_id)}</td>
-                        <td className="p-3.5 whitespace-nowrap truncate max-w-[120px]" title={item.responsavel}>{item.responsavel}</td>
-                        <td className="p-3.5 font-bold text-gray-900 whitespace-nowrap">{getFornecedorLabel(item.fornecedor_id)}</td>
-                        <td className="p-3.5 whitespace-nowrap">
-                          <span className={`px-2.5 py-1 text-[10px] font-extrabold rounded-full border ${leg.color} inline-flex items-center gap-1 shadow-2xs`}>
-                            <span className="text-sm select-none">{leg.icon}</span> {leg.label}
-                          </span>
-                        </td>
-                        <td className="p-3.5 text-gray-500 max-w-[160px] truncate" title={item.observacao || '-'}>
-                          {item.observacao || <span className="text-gray-300">-</span>}
-                        </td>
+            return (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden" id="reports-table-card">
+                <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-gray-700">Lançamentos Detalhados</h3>
+                  <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded">
+                    Filtrados: {totalPrevistos}
+                  </span>
+                </div>
+
+                <div className="overflow-x-auto" id="table-scroll">
+                  <table className={`w-full text-left ${tableFontSize} border-collapse`}>
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-500 font-bold border-b border-gray-100">
+                        <th className={tableCellPadding}>Data/Hora</th>
+                        <th className={tableCellPadding}>Filial</th>
+                        <th className={tableCellPadding}>Setor</th>
+                        <th className={tableCellPadding}>Líder</th>
+                        <th className={tableCellPadding}>Agência</th>
+                        <th className={tableCellPadding}>Status</th>
+                        <th className={tableCellPadding}>Observação</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-gray-700 font-medium">
+                      {matchingRecords.map((item) => {
+                        const leg = STATUS_LEGENDS[item.status] || { label: item.status, icon: '', color: 'bg-gray-100 text-gray-600' };
+                        return (
+                          <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                            <td className={`${tableCellPadding} whitespace-nowrap`}>
+                              <span className="font-bold text-gray-900 block">{item.data.split('-').reverse().join('/')}</span>
+                              <span className="font-mono text-[9px] text-gray-400 block mt-0.5">{item.hora}</span>
+                            </td>
+                            <td className={`${tableCellPadding} font-bold text-indigo-950 whitespace-nowrap`}>{getFilialLabel(item.filial_id)}</td>
+                            <td className={`${tableCellPadding} text-gray-800 whitespace-nowrap`}>{getSetorLabel(item.setor_id)}</td>
+                            <td className={`${tableCellPadding} whitespace-nowrap truncate max-w-[120px]`} title={item.responsavel}>{item.responsavel}</td>
+                            <td className={`${tableCellPadding} font-bold text-gray-900 whitespace-nowrap`}>{getFornecedorLabel(item.fornecedor_id)}</td>
+                            <td className={`${tableCellPadding} whitespace-nowrap`}>
+                              <span className={`px-2 py-0.5 text-[9.5px] font-extrabold rounded-full border ${leg.color} inline-flex items-center gap-1 shadow-2xs`}>
+                                <span className="text-xs select-none">{leg.icon}</span> {leg.label}
+                              </span>
+                            </td>
+                            <td className={`${tableCellPadding} text-gray-500 max-w-[160px] truncate`} title={item.observacao || '-'}>
+                              {item.observacao || <span className="text-gray-300">-</span>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })()}
         </>
       )}
     </div>
