@@ -602,8 +602,7 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
         <div className="flex md:justify-end gap-2 mt-4 pt-4 border-t border-gray-50 flex-col sm:flex-row" id="filters-actions-box">
           <button
             onClick={() => setShowClearConfirm(true)}
-            disabled={checklists.length === 0}
-            className="px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all shrink-0 shadow-md active:scale-95"
             id="btn-clear-history-database"
             title="Excluir de forma definitiva todo o histórico de lançamentos"
           >
@@ -743,39 +742,59 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
       {showClearConfirm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" id="clear-confirm-modal-overlay">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-100 overflow-hidden transform transition-all animate-fade animate-duration-200" id="clear-confirm-modal-box">
-            <div className="h-1.5 bg-rose-500"></div>
+            <div className={checklists.length === 0 ? "h-1.5 bg-[#005AA9]" : "h-1.5 bg-rose-500"}></div>
             <div className="p-6">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-rose-50 text-rose-600 rounded-full shrink-0">
+                <div className={`p-3 rounded-full shrink-0 ${checklists.length === 0 ? 'bg-blue-50 text-[#005AA9]' : 'bg-rose-50 text-rose-600'}`}>
                   <AlertTriangle className="w-6 h-6" />
                 </div>
                 <div className="space-y-1.5">
-                  <h3 className="text-base font-bold text-gray-900">Limpar todo o Histórico?</h3>
+                  <h3 className="text-base font-bold text-gray-900">
+                    {checklists.length === 0 ? "Histórico Vazio" : "Limpar todo o Histórico?"}
+                  </h3>
                   <p className="text-gray-500 text-xs leading-relaxed">
-                    Esta ação é definitiva e apagará todos os <strong>{checklists.length} lançamentos</strong> salvos neste dispositivo. 
-                    Se houver pendências de sincronização offline, elas também serão perdidas de forma permanente.
+                    {checklists.length === 0 ? (
+                      "Não há nenhum lançamento salvo no histórico para limpar atualmente neste dispositivo."
+                    ) : (
+                      <>
+                        Esta ação é definitiva e apagará todos os <strong>{checklists.length} lançamentos</strong> salvos neste dispositivo. 
+                        Se houver pendências de sincronização offline, elas também serão perdidas de forma permanente.
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
               
               <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-100">
-                <button
-                  onClick={() => setShowClearConfirm(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 rounded-lg font-bold text-xs cursor-pointer transition-all"
-                  id="btn-cancel-clear-history"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => {
-                    onClearHistory();
-                    setShowClearConfirm(false);
-                  }}
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-sm"
-                  id="btn-confirm-clear-history"
-                >
-                  <Trash2 className="w-3.5 h-3.5" /> Confirmar e Excluir
-                </button>
+                {checklists.length === 0 ? (
+                  <button
+                    onClick={() => setShowClearConfirm(false)}
+                    className="px-4 py-2 bg-[#005AA9] hover:bg-blue-700 text-white rounded-lg font-bold text-xs cursor-pointer transition-all shadow-sm active:scale-95"
+                    id="btn-ok-clear-history"
+                  >
+                    Entendido
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setShowClearConfirm(false)}
+                      className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 rounded-lg font-bold text-xs cursor-pointer transition-all"
+                      id="btn-cancel-clear-history"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={() => {
+                        onClearHistory();
+                        setShowClearConfirm(false);
+                      }}
+                      className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                      id="btn-confirm-clear-history"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Confirmar e Excluir
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
