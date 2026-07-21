@@ -206,7 +206,7 @@ export default function ChecklistExecution({
 
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#005AA9]" /> Data da Conferência
+                <Calendar className="w-3.5 h-3.5 text-[#EE5900]" /> Data da Conferência
               </label>
               <input
                 id="conf-date"
@@ -214,13 +214,13 @@ export default function ChecklistExecution({
                 required
                 value={checklistDate}
                 onChange={(e) => setChecklistDate(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#005AA9]"
+                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#EE5900]"
               />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#005AA9]" /> Filial do Atacadão
+                <MapPin className="w-3.5 h-3.5 text-[#EE5900]" /> Filial do Atacadão
               </label>
               {filiais.length === 0 ? (
                 <div className="bg-orange-50 border border-orange-200 text-orange-800 text-xs p-3 rounded-lg leading-relaxed">
@@ -231,7 +231,7 @@ export default function ChecklistExecution({
                   id="conf-filial"
                   value={selectedFilialId}
                   onChange={(e) => setSelectedFilialId(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#005AA9]"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#EE5900]"
                 >
                   {filiais.map(f => (
                     <option key={f.id} value={f.id}>
@@ -245,7 +245,7 @@ export default function ChecklistExecution({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <ShoppingBag className="w-3.5 h-3.5 text-[#005AA9]" /> Setor
+                  <ShoppingBag className="w-3.5 h-3.5 text-[#EE5900]" /> Setor
                 </label>
                 {setores.length === 0 ? (
                   <div className="bg-orange-50 border border-orange-200 text-orange-800 text-xs p-3 rounded-lg leading-relaxed">
@@ -256,7 +256,7 @@ export default function ChecklistExecution({
                     id="conf-setor"
                     value={selectedSetorId}
                     onChange={(e) => setSelectedSetorId(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#005AA9]"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#EE5900]"
                   >
                     {setores.map(s => (
                       <option key={s.id} value={s.id}>
@@ -269,7 +269,7 @@ export default function ChecklistExecution({
 
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-[#005AA9]" /> Líder Responsável
+                  <User className="w-3.5 h-3.5 text-[#EE5900]" /> Líder Responsável
                 </label>
                 <input
                   id="conf-responsavel"
@@ -278,7 +278,7 @@ export default function ChecklistExecution({
                   placeholder="Ex. João Silva (Líder)"
                   value={responsavelName}
                   onChange={(e) => setResponsavelName(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#005AA9]"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#EE5900]"
                 />
               </div>
             </div>
@@ -287,7 +287,7 @@ export default function ChecklistExecution({
               id="btn-start-checklist-workflow"
               type="submit"
               disabled={filiais.length === 0 || setores.length === 0}
-              className="w-full bg-[#F58220] hover:bg-orange-600 font-bold text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer text-sm shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed mt-4"
+              className="w-full bg-[#EE5900] hover:bg-[#D84900] font-bold text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer text-sm shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed mt-4"
             >
               Iniciar Checklist <ArrowRight className="w-4 h-4" />
             </button>
@@ -296,9 +296,9 @@ export default function ChecklistExecution({
       ) : (
         <div className="bg-gray-50 rounded-2xl shadow-md overflow-hidden border border-gray-100" id="step-audit-card">
           {/* Audit Header */}
-          <div className="bg-[#005AA9] p-4 text-white" id="audit-header">
+          <div className="bg-gradient-to-r from-[#006B3F] to-[#00502E] p-4 text-white" id="audit-header">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs bg-orange-500 font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider text-white">
+              <span className="text-xs bg-[#EE5900] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider text-white">
                 Checklist em andamento
               </span>
               <button
@@ -307,28 +307,28 @@ export default function ChecklistExecution({
                     setCurrentStep('init');
                   }
                 }}
-                className="text-xs text-blue-200 hover:text-[#F58220] hover:underline font-bold p-1 transition-colors"
+                className="text-xs text-emerald-100 hover:text-orange-200 hover:underline font-bold p-1 transition-colors"
                 id="btn-cancel-audit-session"
               >
                 Voltar/Cancelar
               </button>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs border-t border-blue-800/60 pt-3 mt-1 font-medium">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs border-t border-emerald-700/60 pt-3 mt-1 font-medium">
               <div>
-                <span className="text-blue-200 block font-light">Data:</span>
+                <span className="text-emerald-100 block font-light">Data:</span>
                 <span className="font-semibold text-gray-100">{checklistDate.split('-').reverse().join('/')}</span>
               </div>
               <div>
-                <span className="text-blue-200 block font-light">Filial:</span>
+                <span className="text-emerald-100 block font-light">Filial:</span>
                 <span className="font-semibold text-gray-100">{selectedFilialObj ? `${selectedFilialObj.codigo} - ${selectedFilialObj.nome}` : ''}</span>
               </div>
               <div>
-                <span className="text-blue-200 block font-light">Setor:</span>
-                <span className="font-semibold text-[#F58220]">{selectedSetorObj?.nome}</span>
+                <span className="text-emerald-100 block font-light">Setor:</span>
+                <span className="font-semibold text-amber-300">{selectedSetorObj?.nome}</span>
               </div>
               <div>
-                <span className="text-blue-200 block font-light">Líder:</span>
+                <span className="text-emerald-100 block font-light">Líder:</span>
                 <span className="font-semibold text-gray-100 truncate block">{responsavelName}</span>
               </div>
             </div>
@@ -347,15 +347,15 @@ export default function ChecklistExecution({
             )}
 
             {/* Time Saving Action */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3.5 bg-blue-50 border border-blue-100 rounded-xl gap-3">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3.5 bg-emerald-50/70 border border-emerald-100 rounded-xl gap-3">
               <div>
-                <h4 className="text-xs font-extrabold text-[#005AA9] uppercase tracking-wide">Dica de Produtividade</h4>
+                <h4 className="text-xs font-extrabold text-[#006B3F] uppercase tracking-wide">Dica de Produtividade</h4>
                 <p className="text-xs text-gray-600 mt-0.5">Se a maioria dos promotores estiver presente hoje, use o atalho:</p>
               </div>
               <button
                 type="button"
                 onClick={handleMarkAllPresent}
-                className="bg-[#005AA9] hover:bg-blue-800 text-white font-extrabold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap self-end sm:self-center"
+                className="bg-[#006B3F] hover:bg-[#00502E] text-white font-extrabold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all cursor-pointer whitespace-nowrap self-end sm:self-center"
                 id="btn-mark-all-present"
               >
                 👍 Marcar Todos como Presentes

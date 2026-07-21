@@ -34,26 +34,55 @@ const INITIAL_FORNECEDORES: Fornecedor[] = [
   { id: 'forn_yakult', nome: 'Yakult', setor_id: 'setor_frios' },
 
   // Loja (responsible for other products as requested)
-  { id: 'forn_nestle', nome: 'Nestlé', setor_id: 'setor_loja' },
-  { id: 'forn_unilever', nome: 'Unilever', setor_id: 'setor_loja' },
-  { id: 'forn_mdias', nome: 'M. Dias Branco', setor_id: 'setor_loja' },
-  { id: 'forn_camil', nome: 'Camil', setor_id: 'setor_loja' },
-  { id: 'forn_bauducco', nome: 'Bauducco', setor_id: 'setor_loja' },
-  { id: 'forn_cargill', nome: 'Cargill', setor_id: 'setor_loja' },
+  { id: 'forn_ag_cas', nome: 'Agencia CAS', setor_id: 'setor_loja' },
+  { id: 'forn_ag_nk', nome: 'Agencia NK', setor_id: 'setor_loja' },
+  { id: 'forn_ag_rks', nome: 'Agencia RKS', setor_id: 'setor_loja' },
+  { id: 'forn_ag_segobi', nome: 'Agencia Segobi', setor_id: 'setor_loja' },
+  { id: 'forn_ag_wsa', nome: 'Agencia WSA', setor_id: 'setor_loja' },
+  { id: 'forn_ajinomoto', nome: 'Ajinomoto', setor_id: 'setor_loja' },
+  { id: 'forn_amavita', nome: 'Amavita', setor_id: 'setor_loja' },
   { id: 'forn_ambev', nome: 'Ambev', setor_id: 'setor_loja' },
-  { id: 'forn_cocacola', nome: 'Coca-Cola', setor_id: 'setor_loja' },
+  { id: 'forn_arcor', nome: 'Arcor', setor_id: 'setor_loja' },
+  { id: 'forn_baby_soft', nome: 'Baby Soft', setor_id: 'setor_loja' },
+  { id: 'forn_bauducco', nome: 'Bauducco', setor_id: 'setor_loja' },
+  { id: 'forn_bunge', nome: 'Bunge', setor_id: 'setor_loja' },
+  { id: 'forn_cargio', nome: 'Cargio', setor_id: 'setor_loja' },
+  { id: 'forn_casa_km', nome: 'Casa Km', setor_id: 'setor_loja' },
+  { id: 'forn_cepera', nome: 'Cepera', setor_id: 'setor_loja' },
+  { id: 'forn_coca_cola', nome: 'Coca Cola', setor_id: 'setor_loja' },
+  { id: 'forn_colgate', nome: 'Colgate', setor_id: 'setor_loja' },
+  { id: 'forn_dafruta', nome: 'Dafruta', setor_id: 'setor_loja' },
+  { id: 'forn_dajuda', nome: 'Dajuda', setor_id: 'setor_loja' },
+  { id: 'forn_dusul', nome: 'Dusul', setor_id: 'setor_loja' },
+  { id: 'forn_ferreiro_br', nome: 'Ferreiro do Brasil', setor_id: 'setor_loja' },
+  { id: 'forn_havaianas', nome: 'Havaianas', setor_id: 'setor_loja' },
   { id: 'forn_heineken', nome: 'Heineken', setor_id: 'setor_loja' },
-  { id: 'forn_petropolis', nome: 'Grupo Petrópolis', setor_id: 'setor_loja' },
-  { id: 'forn_ype', nome: 'Ypê', setor_id: 'setor_loja' },
+  { id: 'forn_heinz', nome: 'Heinz', setor_id: 'setor_loja' },
+  { id: 'forn_johnson_johnson', nome: 'Johnson e Johnson', setor_id: 'setor_loja' },
+  { id: 'forn_kellogs', nome: 'Kellogs', setor_id: 'setor_loja' },
+  { id: 'forn_loreal', nome: 'Loreal', setor_id: 'setor_loja' },
+  { id: 'forn_marata', nome: 'Marata', setor_id: 'setor_loja' },
+  { id: 'forn_marilan', nome: 'Marilan', setor_id: 'setor_loja' },
+  { id: 'forn_mega_promo', nome: 'Mega Promo', setor_id: 'setor_loja' },
+  { id: 'forn_monange', nome: 'Monange', setor_id: 'setor_loja' },
+  { id: 'forn_mondelez', nome: 'Mondelez', setor_id: 'setor_loja' },
+  { id: 'forn_nadir_figueiredo', nome: 'Nadir Figueiredo', setor_id: 'setor_loja' },
+  { id: 'forn_nestle', nome: 'Nestle', setor_id: 'setor_loja' },
+  { id: 'forn_nivea', nome: 'Nivea', setor_id: 'setor_loja' },
+  { id: 'forn_p_g', nome: 'P&G', setor_id: 'setor_loja' },
+  { id: 'forn_penco', nome: 'Penco', setor_id: 'setor_loja' },
+  { id: 'forn_pepsico', nome: 'Pepsico', setor_id: 'setor_loja' },
+  { id: 'forn_pullman', nome: 'Pullman', setor_id: 'setor_loja' },
+  { id: 'forn_qboa', nome: 'QBOA', setor_id: 'setor_loja' },
+  { id: 'forn_rh_simoes', nome: 'R.H Simões', setor_id: 'setor_loja' },
   { id: 'forn_reckitt', nome: 'Reckitt', setor_id: 'setor_loja' },
-  { id: 'forn_colgate', nome: 'Colgate-Palmolive', setor_id: 'setor_loja' },
-  { id: 'forn_bombril', nome: 'Bombril', setor_id: 'setor_loja' },
-  { id: 'forn_tramontina', nome: 'Tramontina', setor_id: 'setor_loja' },
-  { id: 'forn_sanremo', nome: 'Sanremo', setor_id: 'setor_loja' },
-  { id: 'forn_plasutil', nome: 'Plasútil', setor_id: 'setor_loja' },
-  { id: 'forn_pomar', nome: 'Central do Pomar', setor_id: 'setor_loja' },
-  { id: 'forn_trebeschi', nome: 'Trebeschi', setor_id: 'setor_loja' },
-  { id: 'forn_fisher', nome: 'Fischer Frutas', setor_id: 'setor_loja' },
+  { id: 'forn_red_bull', nome: 'Red Bull', setor_id: 'setor_loja' },
+  { id: 'forn_refrig_regional', nome: 'Refrigerante Regional', setor_id: 'setor_loja' },
+  { id: 'forn_selmi', nome: 'Selmi (Macarrão Galo)', setor_id: 'setor_loja' },
+  { id: 'forn_skala', nome: 'Skala', setor_id: 'setor_loja' },
+  { id: 'forn_sul_brasil', nome: 'Sul Brasil', setor_id: 'setor_loja' },
+  { id: 'forn_unilever', nome: 'Unilever', setor_id: 'setor_loja' },
+  { id: 'forn_hinomoto', nome: 'Hinomoto', setor_id: 'setor_loja' }
 ];
 
 // Auto-migration to ensure only LOJA and FRIOS sectors exist in local storage
@@ -110,6 +139,19 @@ const migrateSectorsAndSuppliers = () => {
 
 // Run the migration immediately
 migrateSectorsAndSuppliers();
+
+const migrateNewDefaultSuppliers = () => {
+  try {
+    const MIGRATION_KEY = 'promotorcheck_migrated_fornecedores_v3';
+    if (!localStorage.getItem(MIGRATION_KEY)) {
+      localStorage.setItem('promotorcheck_fornecedores', JSON.stringify(INITIAL_FORNECEDORES));
+      localStorage.setItem(MIGRATION_KEY, 'true');
+    }
+  } catch (err) {
+    console.error('Error running supplier v3 migration:', err);
+  }
+};
+migrateNewDefaultSuppliers();
 
 // LocalStorage Keys
 const KEYS = {

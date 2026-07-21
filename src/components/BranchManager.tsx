@@ -95,10 +95,10 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100" id="branch-manager-card">
-      <div className="bg-[#005AA9] px-6 py-4 flex items-center justify-between" id="branch-manager-header">
+      <div className="bg-gradient-to-r from-[#EE5900] to-[#D84900] px-6 py-4 flex items-center justify-between" id="branch-manager-header">
         <button
           onClick={onBack}
-          className="text-white hover:text-[#F58220] transition-colors flex items-center gap-2 p-1"
+          className="text-white hover:text-orange-200 transition-colors flex items-center gap-2 p-1 cursor-pointer"
           title="Voltar ao início"
           id="btn-back-branch"
         >
@@ -106,7 +106,7 @@ export default function BranchManager({ filiais, onSave, onBack }: BranchManager
           <span className="text-sm font-medium">Voltar</span>
         </button>
         <div className="flex items-center gap-2">
-          <Store className="text-[#F58220] w-6 h-6" />
+          <Store className="text-white w-6 h-6" />
           <h2 className="text-white font-bold text-lg">Cadastro de Filiais</h2>
         </div>
         <div className="w-10"></div> {/* Balanced spacing */}

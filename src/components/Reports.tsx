@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { ChecklistRecord, Filial, Setor, Fornecedor } from '../types';
-import { Calendar, FileDown, Eye, RefreshCw, Send, Search, CheckCircle, HelpCircle, AlertCircle, RefreshCcw, Trash2, AlertTriangle } from 'lucide-react';
+import { Calendar, FileDown, Download, Share2, Eye, RefreshCw, Send, Search, CheckCircle, HelpCircle, AlertCircle, RefreshCcw, Trash2, AlertTriangle } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -101,7 +101,7 @@ export default function Reports({ checklists, filiais, setores, fornecedores, on
     return p ? p.nome : 'Agência Excluída';
   };
 
-  const exportToPDF = async () => {
+  const exportToPDF = async (mode: 'download' | 'share' = 'download') => {
     if (matchingRecords.length === 0) {
       alert('Não existem registros para exportar PDF.');
       return;
@@ -383,55 +383,34 @@ export default function Reports({ checklists, filiais, setores, fornecedores, on
 
     const formattedFileName = `PromotorCheck_UltimoRelatorio_${latest.data.replace(/-/g, '')}.pdf`;
     
-    // 1. Try native mobile sharing (best for Android WebView / APK Wrappers)
-    const pdfBlob = doc.output('blob');
-    const pdfFile = new File([pdfBlob], formattedFileName, { type: 'application/pdf' });
-    
-    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-      try {
-        await navigator.share({
-          files: [pdfFile],
-          title: 'Relatório PDF',
-          text: 'Relatório do Checklist de Promotores Atacadão'
-        });
-        return; // Success! Sharing/Saving handled by native sheet
-      } catch (err: any) {
-        if (err && err.name === 'AbortError') {
-          return; // User cancelled, do nothing
+    // In 'share' mode, try native Web Share API (mobile app sharing)
+    if (mode === 'share') {
+      const pdfBlob = doc.output('blob');
+      const pdfFile = new File([pdfBlob], formattedFileName, { type: 'application/pdf' });
+      
+      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        try {
+          await navigator.share({
+            files: [pdfFile],
+            title: 'Relatório PDF',
+            text: 'Relatório do Checklist de Promotores Atacadão'
+          });
+          return;
+        } catch (err: any) {
+          if (err && err.name === 'AbortError') {
+            return;
+          }
+          console.error('Erro ao compartilhar PDF, executando download:', err);
         }
-        console.error('Erro ao compartilhar PDF, usando fallback:', err);
       }
     }
 
-    // 2. Try showSaveFilePicker if supported (mostly desktop Chrome)
-    if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
-      try {
-        const handle = await (window as any).showSaveFilePicker({
-          suggestedName: formattedFileName,
-          types: [{
-            description: 'Documento PDF (*.pdf)',
-            accept: {
-              'application/pdf': ['.pdf']
-            }
-          }]
-        });
-        const writable = await handle.createWritable();
-        const pdfOutput = doc.output('arraybuffer');
-        await writable.write(pdfOutput);
-        await writable.close();
-      } catch (err: any) {
-        if (err && err.name !== 'AbortError') {
-          console.error('Erro ao salvar PDF via showSaveFilePicker, usando fallback:', err);
-          doc.save(formattedFileName);
-        }
-      }
-    } else {
-      doc.save(formattedFileName);
-    }
+    // Direct browser file download for PC/Desktop & direct download request
+    doc.save(formattedFileName);
   };
 
   // Excel Export Flow
-  const exportToExcel = async () => {
+  const exportToExcel = async (mode: 'download' | 'share' = 'download') => {
     if (matchingRecords.length === 0) {
       alert('Não existem registros para exportar Excel.');
       return;
@@ -451,35 +430,35 @@ export default function Reports({ checklists, filiais, setores, fornecedores, on
 
     const worksheet = XLSX.utils.json_to_sheet(formattedRows);
     
-    // Autofilter and size adjustments if needed
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Checklist Registros');
     
     const formattedFileName = `PromotorCheck_Relatorio_${startDate.replace(/-/g, '')}_${endDate.replace(/-/g, '')}.xlsx`;
     
-    // Check if we can share the Excel file (best for APK / WebView)
-    try {
-      const excelOutput = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const excelBlob = new Blob([excelOutput], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const excelFile = new File([excelBlob], formattedFileName, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    if (mode === 'share') {
+      try {
+        const excelOutput = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const excelBlob = new Blob([excelOutput], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const excelFile = new File([excelBlob], formattedFileName, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-      if (navigator.canShare && navigator.canShare({ files: [excelFile] })) {
-        try {
-          await navigator.share({
-            files: [excelFile],
-            title: 'Relatório Excel',
-            text: 'Relatório do Checklist de Promotores Atacadão (Excel)'
-          });
-          return; // Success! Native sharing sheet handled it
-        } catch (shareErr: any) {
-          if (shareErr && shareErr.name === 'AbortError') {
-            return; // User cancelled, do nothing
+        if (navigator.canShare && navigator.canShare({ files: [excelFile] })) {
+          try {
+            await navigator.share({
+              files: [excelFile],
+              title: 'Relatório Excel',
+              text: 'Relatório do Checklist de Promotores Atacadão (Excel)'
+            });
+            return;
+          } catch (shareErr: any) {
+            if (shareErr && shareErr.name === 'AbortError') {
+              return;
+            }
+            console.error('Erro ao compartilhar Excel:', shareErr);
           }
-          console.error('Erro ao compartilhar Excel:', shareErr);
         }
+      } catch (e) {
+        console.error('Falha ao preparar arquivo Excel para compartilhamento:', e);
       }
-    } catch (e) {
-      console.error('Falha ao preparar arquivo Excel para compartilhamento:', e);
     }
 
     // Standard download fallback
@@ -519,9 +498,9 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
     <div className="w-full max-w-6xl mx-auto space-y-6" id="reports-and-queries-wrapper">
       
       {/* Search Filter Box */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5" id="reports-filters-card">
+      <div className="bg-white rounded-2xl shadow-xs border border-gray-100 p-5" id="reports-filters-card">
         <div className="flex items-center gap-2 text-gray-700 font-bold text-sm mb-4">
-          <Search className="w-4 h-4 text-[#005AA9]" />
+          <Search className="w-4 h-4 text-[#EE5900]" />
           <h2>Filtros Avançados</h2>
         </div>
 
@@ -533,7 +512,7 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full bg-slate-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#005AA9]"
+              className="w-full bg-slate-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#EE5900]"
             />
           </div>
 
@@ -544,7 +523,7 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-slate-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#005AA9]"
+              className="w-full bg-slate-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#EE5900]"
             />
           </div>
 
@@ -654,23 +633,34 @@ _Gerado de forma offline pelo aplicativo PromotorCheck do Atacadão._`;
             </span>
             <div className="flex gap-2 flex-wrap w-full sm:w-auto" id="export-buttons">
               <button
-                onClick={exportToPDF}
-                className="flex-1 sm:flex-initial bg-[#F58220] hover:bg-orange-600 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
-                id="btn-export-pdf"
+                onClick={() => exportToPDF('download')}
+                className="flex-1 sm:flex-initial bg-[#EE5900] hover:bg-[#D84900] text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                id="btn-download-pdf"
+                title="Baixar arquivo PDF diretamente para o computador/dispositivo"
               >
-                <FileDown className="w-3.5 h-3.5" /> PDF
+                <Download className="w-3.5 h-3.5" /> Baixar PDF
               </button>
               <button
-                onClick={exportToExcel}
-                className="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                onClick={() => exportToPDF('share')}
+                className="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                id="btn-share-pdf"
+                title="Compartilhar arquivo PDF"
+              >
+                <Share2 className="w-3.5 h-3.5" /> Compartilhar PDF
+              </button>
+              <button
+                onClick={() => exportToExcel('download')}
+                className="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
                 id="btn-export-excel"
+                title="Baixar planilha Excel (.xlsx)"
               >
                 <FileDown className="w-3.5 h-3.5" /> Excel
               </button>
               <button
                 onClick={shareToWhatsApp}
-                className="flex-1 sm:flex-initial bg-[#25D366] hover:bg-emerald-600 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                className="flex-1 sm:flex-initial bg-[#25D366] hover:bg-emerald-600 text-white font-bold text-xs py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
                 id="btn-export-whatsapp"
+                title="Enviar resumo formatado via WhatsApp"
               >
                 <Send className="w-3.5 h-3.5" /> WhatsApp
               </button>
